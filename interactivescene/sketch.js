@@ -12,7 +12,9 @@ let triLength = 30;
 let triVel;
 let maxVel = 1;
 let accelR = 0.05;
-let heading;
+let heading = 0;
+let mX = 0;
+let mY = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -32,34 +34,35 @@ function tri() {
   triMove();
   triTurn();
 
-  triangle(vec.x + triLength, vec.y, vec.x, 
-    vec.y + triWidth, vec.x, vec.y - triWidth);
-
+  // triangle(vec.x + triLength, vec.y, vec.x, 
+  //   vec.y + triWidth, vec.x, vec.y - triWidth);
+  triangle(0, 5, 0, -5, 5, 0)
+  point(0, 0);
+  point(vec);
   pop();
 }
 
 function triTurn() {
-//   if (keyIsDown(65)) { // press 'A' and turn left
-//   rotate(QUARTER_PI)
-//   }
-//   if (keyIsDown(68)) {
-  translate(vec);
-  heading = atan2(mouseY - vec.y, mouseX - vec.x);
+  if (keyIsDown(65)) { // press 'A' and turn left
+    heading -= radians(1);
+  }
+  if (keyIsDown(68)) {
+    heading += radians(1);
+  }
+  // mX = mX + vec.x;
+  // mY = mY + vec.y;
+  // heading = atan2(mouseY - mY, mouseX - mX);
   rotate(heading);
   
 }
 
 function triMove() {
-  translate(vec);
   triVel.x = cos(heading);
   triVel.y = sin(heading);
-  
+
   vec.add(triVel);
+  translate(vec);
 }
-
-
-
-
 
 
 
