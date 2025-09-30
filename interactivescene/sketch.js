@@ -10,12 +10,15 @@ let vec;
 let triWidth = 10;
 let triLength = 30;
 let triVel;
-let maxVel = 1;
-let accelR = 0.05;
+let dx = 0;
+let dy = 0;
+let maxVel = 5;
+let accelR = 0.1;
+let mass = 20;
 let heading = 0;
-let mX = 0;
-let mY = 0;
 let turnR = 5;
+let fthrust = 5;
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -26,7 +29,7 @@ function setup() {
 function draw() {
   background(220);
   tri();
-  console.log(mouseX);
+  console.log(triVel.x + triVel.y);
 }
 
 function tri() {
@@ -35,34 +38,27 @@ function tri() {
   triMove();
   triTurn();
 
-  // triangle(vec.x + triLength, vec.y, vec.x, 
-  //   vec.y + triWidth, vec.x, vec.y - triWidth);
+
   triangle(-triLength/3, triWidth/2, -triLength/3, -triWidth/2, triLength/2, 0)
-  point(0, 0);
-  // point(vec);
   pop();
 }
 
 function triTurn() {
-  if (keyIsDown(65)) { // press 'A' and turn left
+  if (keyIsDown(65)) { // press 'A' to turn counter clockwise
     heading -= radians(turnR);
   }
-  if (keyIsDown(68)) {
-    heading += radians(turnR);
+  if (keyIsDown(68)) { // press 'D' to turn clockwise
+    heading += radians(turnR); 
   }
-  // mX = mX + vec.x;
-  // mY = mY + vec.y;
-  // heading = atan2(mouseY - mY, mouseX - mX);
   rotate(heading);
-  
 }
 
 function triMove() {
+  dx = cos(heading);
+  dy = sin(heading);
+  triVel.x += dx/mass;
+  triVel.y += dy/mass;
   
-
-  triVel.x = cos(heading)/5;
-  triVel.y = sin(heading)/5;
-
   vec.add(triVel);
   translate(vec);
 }
