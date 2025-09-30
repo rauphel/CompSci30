@@ -15,6 +15,7 @@ let accelR = 0.05;
 let heading = 0;
 let mX = 0;
 let mY = 0;
+let turnR = 5;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -36,18 +37,18 @@ function tri() {
 
   // triangle(vec.x + triLength, vec.y, vec.x, 
   //   vec.y + triWidth, vec.x, vec.y - triWidth);
-  triangle(0, 5, 0, -5, 5, 0)
+  triangle(-triLength/3, triWidth/2, -triLength/3, -triWidth/2, triLength/2, 0)
   point(0, 0);
-  point(vec);
+  // point(vec);
   pop();
 }
 
 function triTurn() {
   if (keyIsDown(65)) { // press 'A' and turn left
-    heading -= radians(1);
+    heading -= radians(turnR);
   }
   if (keyIsDown(68)) {
-    heading += radians(1);
+    heading += radians(turnR);
   }
   // mX = mX + vec.x;
   // mY = mY + vec.y;
@@ -57,8 +58,10 @@ function triTurn() {
 }
 
 function triMove() {
-  triVel.x = cos(heading);
-  triVel.y = sin(heading);
+  
+
+  triVel.x = cos(heading)/5;
+  triVel.y = sin(heading)/5;
 
   vec.add(triVel);
   translate(vec);
