@@ -39,7 +39,7 @@ function tri() {
   triTurn();
 
 
-  triangle(-triLength/3, triWidth/2, -triLength/3, -triWidth/2, triLength/2, 0)
+  triangle(-triLength/3, triWidth/2, -triLength/3, -triWidth/2, triLength/2, 0);
   pop();
 }
 
