@@ -13,11 +13,11 @@ let triVel;
 let dx = 0;
 let dy = 0;
 let maxVel = 5;
-let accelR = 0.1;
+let accelR = 0;
 let mass = 20;
 let heading = 0;
 let turnR = 5;
-let fthrust = 5;
+
 
 
 function setup() {
@@ -29,14 +29,16 @@ function setup() {
 function draw() {
   background(220);
   tri();
-  console.log(triVel.x + triVel.y);
+  console.log(dx);
 }
 
 function tri() {
   push();
   translate(vec);
+  speedControl();
   triMove();
   triTurn();
+ 
 
 
   triangle(-triLength/3, triWidth/2, -triLength/3, -triWidth/2, triLength/2, 0);
@@ -54,14 +56,22 @@ function triTurn() {
 }
 
 function triMove() {
-  dx = cos(heading);
-  dy = sin(heading);
-  triVel.x += dx/mass;
-  triVel.y += dy/mass;
+  dx = cos(heading) * accelR/mass;
+  dy = sin(heading) * accelR/mass;
+  triVel.x += dx;
+  triVel.y += dy;
   
   vec.add(triVel);
   translate(vec);
 }
 
-
-
+function speedControl() {
+  if (mouseIsPressed) {
+    if (mouseButton === LEFT) {
+      accelR = 1.2;
+    }
+  }
+  else {
+    accelR = 0;
+  }
+}
