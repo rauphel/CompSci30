@@ -5,7 +5,6 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-
 let vec;
 let triWidth = 10;
 let triLength = 30;
@@ -18,18 +17,29 @@ let mass = 20;
 let heading = 0;
 let turnR = 5;
 
-
+let gameStart = false;
+let rectX;
+let rectY;
+let rectX2;
+let rectY2;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  rectMode(CENTER);
+  rectX = windowWidth/2 - 100;
+  rectY = windowHeight/2 - 50;
+  rectX2 = windowWidth/2 + 100;
+  rectY2 = windowHeight/2 + 50;
+
   vec = createVector(0, 0);
   triVel = createVector(0, 0);
 }
 
 function draw() {
   background(220);
+  button();
   tri();
-  console.log(dx);
+  console.log(triVel.x);
 }
 
 function tri() {
@@ -74,4 +84,16 @@ function speedControl() {
   else {
     accelR = 0;
   }
+}
+
+function startScreen() {
+  if (!gameStart) {
+    fill('magenta');
+
+  }
+}
+
+function button() {
+  fill('black');
+  rect(rectX, rectY, rectX2, rectY2);
 }
