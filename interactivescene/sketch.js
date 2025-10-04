@@ -6,6 +6,7 @@
 // - describe what you did to take this project "above and beyond"
 
 let vec;
+let triVec;
 let triWidth = 10;
 let triLength = 30;
 let triVel;
@@ -18,21 +19,20 @@ let heading = 0;
 let turnR = 5;
 
 let gameStart = false;
-let rectX;
-let rectY;
-let rectX2;
-let rectY2;
+let hit = false;
+let rectStart;
+
+let rectSize;
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  rectMode(CENTER);
-  rectX = windowWidth/2 - 100;
-  rectY = windowHeight/2 - 50;
-  rectX2 = windowWidth/2 + 100;
-  rectY2 = windowHeight/2 + 50;
+  rectStart = createVector(width/2 - 50, height/2 - 25)
+  rectSize = createVector(100, 50)
 
   vec = createVector(0, 0);
   triVel = createVector(0, 0);
+  triVec = createVector(0, 0);
 }
 
 function draw() {
@@ -40,18 +40,20 @@ function draw() {
   button();
   tri();
   console.log(triVel.x);
+  point(vec);
 }
 
 function tri() {
   push();
+  fill('white')
   translate(vec);
   speedControl();
   triMove();
   triTurn();
  
-
-
   triangle(-triLength/3, triWidth/2, -triLength/3, -triWidth/2, triLength/2, 0);
+
+  point(triVec);
   pop();
 }
 
@@ -94,6 +96,8 @@ function startScreen() {
 }
 
 function button() {
+  hit = collidePointRectVector(triVec, rectStart, rectSize);
+  console.log(hit);
   fill('black');
-  rect(rectX, rectY, rectX2, rectY2);
+
 }
