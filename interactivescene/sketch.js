@@ -118,7 +118,7 @@ function mousePressed() { //detection of start button pressed and then changes g
   if (!gameStart && mouseButton === LEFT) {
     if (mouseX >= rectStart.x && mouseX <= rectStart.x + rectSize.x 
       && mouseY >= rectStart.y && mouseY <= rectStart.y +rectSize.y) {
-        gameStart = true;
+      gameStart = true;
     }
   }
 }
