@@ -56,7 +56,8 @@ function tri() {
     triTurn();
   
     triangle(-triLength/3, triWidth/2, -triLength/3, -triWidth/2, triLength/2, 0); // sets triangle to be at the moved origin 
-
+    point(vec);
+    // point(0, 0);
     pop();  // end of isolated translations
   }
 }
@@ -78,7 +79,7 @@ function triMove() { //moves triangle based on heading
   triVel.y += dy;
   
   vec.add(triVel); // adds translations to triangle vector
-  translate(vec);  // adds triangle vector to origin point
+  // translate(vec);  // adds triangle vector to origin point
 }
 
 function speedControl() {  // controls acceleration with use of left mouse click 

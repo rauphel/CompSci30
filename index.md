@@ -8,3 +8,4 @@
 ## Assignments
 - [interactivescene](interactivescene)
 - [Array and Objects Assignment](array-object-assignment)
+- [Major Project](major-project)
