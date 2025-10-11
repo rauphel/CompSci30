@@ -15,7 +15,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   spawnHeight = height/2;
   // screenHeight = height;
-  aBlock = spawnBlocks(width/2);
+  // aBlock = spawnBlocks(width/2);
   screen = createScreen();
 }
 
@@ -23,40 +23,52 @@ function draw() {
   background(220);
   // screen();
   rect(screen.x, screen.y, screen.w, screen.h)
-  fill('white');
-  rect(aBlock.x1, aBlock.y1, aBlock.w, aBlock.h);
+
   gravity();
+  showBlocks();
 }
 
 function spawnBlocks(x) {
   let _width = random([1, 2, 3, 4]);
   
   let blocks = {
-    x1: x,
-    y1: spawnHeight,
+    x: x,
+    y: spawnHeight,
     w: blockSize * _width,
     h: blockSize,
     grav: 5,
   };
-  return blocks;
+  theBlocks.push(blocks);
+  console.log(theBlocks)
+}
+
+function showBlocks() {
+  for (let aBlock of theBlocks) {
+    fill('white');
+    rect(aBlock.x, aBlock.y, aBlock.w, aBlock.h);
+  }
 }
 
 function gravity() {
-  if (aBlock.y1 < height - blockSize) {
-    aBlock.y1 += aBlock.grav;
-
+  for (let aBlock of theBlocks) {
+    if (aBlock.y < height - blockSize) {
+      aBlock.y += aBlock.grav;
+  
+    }
   }
 }
 
 function dragBlock() {
-  if (mouseX >= aBlock.x1 && mouseX <= aBlock.x1 + aBlock.w 
-      && mouseY >= aBlock.y1 && mouseY <= aBlock.y1 + aBlock.h) {
-    aBlock.x1 = mouseX - aBlock.w/2;
-    if (aBlock.x1 <= screen.x) {
-      aBlock.x1 = screen.x;
-    }
-    else if (aBlock.x1 + aBlock.w >= screen.x + screen.w) {
-      aBlock.x1 = screen.x + screen.w - aBlock.w;
+  for (let aBlock of theBlocks) {
+    if (mouseX >= aBlock.x && mouseX <= aBlock.x + aBlock.w 
+        && mouseY >= aBlock.y && mouseY <= aBlock.y + aBlock.h) {
+      aBlock.x = mouseX - aBlock.w/2;
+      if (aBlock.x <= screen.x) {
+        aBlock.x = screen.x;
+      }
+      else if (aBlock.x + aBlock.w >= screen.x + screen.w) {
+        aBlock.x = screen.x + screen.w - aBlock.w;
+      }
     }
   }
 }
@@ -84,14 +96,21 @@ function createScreen() {
 }
 
 function blockPosistion() {
-  let xPos = aBlock.x1 - screen.x;
-  if (xPos % blockSize !== 0) {
-    xPos /= blockSize;
-    xPos = round(xPos);
-    xPos *= blockSize;
-    xPos += screen.x;
-    
-    aBlock.x1 = xPos;
+  for (let aBlock of theBlocks) {
+    let xPos = aBlock.x - screen.x;
+    if (xPos % blockSize !== 0) {
+      xPos /= blockSize;
+      xPos = round(xPos);
+      xPos *= blockSize;
+      xPos += screen.x;
+      
+      aBlock.x = xPos;
+    }
   }
+}
 
+function mousePressed() {
+  if (mouseButton === CENTER) {
+    spawnBlocks(width/2);
+  }
 }
