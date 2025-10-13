@@ -29,8 +29,7 @@ function draw() {
 }
 
 function spawnBlocks(x) {
-  let _width = random([1, 2, 3, 4]);
-  
+  let _width = random([1, 2, 3, 4]);  
   let blocks = {
     x: x,
     y: spawnHeight,
@@ -40,6 +39,27 @@ function spawnBlocks(x) {
   };
   theBlocks.push(blocks);
   console.log(theBlocks)
+}
+
+class Block {
+  constructor(_x, _y) {
+    this.x = _x;
+    this.y = _y;
+    this.w = blockSize * ceil(random(4));
+    this.h = blockSize;
+  }
+
+  show() {
+
+  }
+  
+  gravity() {
+
+  }
+
+  collision() {
+
+  }
 }
 
 function showBlocks() {
@@ -114,3 +134,5 @@ function mousePressed() {
     spawnBlocks(width/2);
   }
 }
+
+
