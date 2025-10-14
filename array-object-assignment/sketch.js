@@ -22,7 +22,7 @@ function setup() {
 function draw() {
   background(220);
   // screen();
-  rect(screen.x, screen.y, screen.w, screen.h)
+  rect(screen.x, screen.y, screen.w, screen.h);
 
   gravity();
   showBlocks();
@@ -38,7 +38,7 @@ function spawnBlocks(x) {
     grav: 5,
   };
   theBlocks.push(blocks);
-  console.log(theBlocks)
+  console.log(theBlocks);
 }
 
 class Block {
@@ -50,11 +50,14 @@ class Block {
   }
 
   show() {
-
+    fill('white');
+    rect(this.x, this.y, this.w, this.y);
   }
   
   gravity() {
-
+    if (this.y > height) {
+      this.y += 5;
+    }
   }
 
   collision() {
@@ -134,5 +137,7 @@ function mousePressed() {
     spawnBlocks(width/2);
   }
 }
+
+
 
 
