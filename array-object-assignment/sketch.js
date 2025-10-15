@@ -24,22 +24,28 @@ function draw() {
   // screen();
   rect(screen.x, screen.y, screen.w, screen.h);
 
-  gravity();
-  showBlocks();
+  // gravity();
+  // showBlocks();
+  classBlock();
+
+  for (let aBlock of theBlocks) {
+    aBlock.gravity();
+    aBlock.show();
+  }
 }
 
-function spawnBlocks(x) {
-  let _width = random([1, 2, 3, 4]);  
-  let blocks = {
-    x: x,
-    y: spawnHeight,
-    w: blockSize * _width,
-    h: blockSize,
-    grav: 5,
-  };
-  theBlocks.push(blocks);
-  console.log(theBlocks);
-}
+// function spawnBlocks(x) {
+//   let _width = random([1, 2, 3, 4]);  
+//   let blocks = {
+//     x: x,
+//     y: spawnHeight,
+//     w: blockSize * _width,
+//     h: blockSize,
+//     grav: 5,
+//   };
+//   theBlocks.push(blocks);
+//   console.log(theBlocks);
+// }
 
 class Block {
   constructor(_x, _y) {
@@ -51,35 +57,35 @@ class Block {
 
   show() {
     fill('white');
-    rect(this.x, this.y, this.w, this.y);
+    rect(this.x, this.y, this.w, this.h);
   }
   
   gravity() {
-    if (this.y > height) {
+    if (this.y < height - blockSize) {
       this.y += 5;
     }
   }
 
   collision() {
-
+    
   }
 }
 
-function showBlocks() {
-  for (let aBlock of theBlocks) {
-    fill('white');
-    rect(aBlock.x, aBlock.y, aBlock.w, aBlock.h);
-  }
-}
+// function showBlocks() {
+//   for (let aBlock of theBlocks) {
+//     fill('white');
+//     rect(aBlock.x, aBlock.y, aBlock.w, aBlock.h);
+//   }
+// }
 
-function gravity() {
-  for (let aBlock of theBlocks) {
-    if (aBlock.y < height - blockSize) {
-      aBlock.y += aBlock.grav;
+// function gravity() {
+//   for (let aBlock of theBlocks) {
+//     if (aBlock.y < height - blockSize) {
+//       aBlock.y += aBlock.grav;
   
-    }
-  }
-}
+//     }
+//   }
+// }
 
 function dragBlock() {
   for (let aBlock of theBlocks) {
@@ -138,6 +144,22 @@ function mousePressed() {
   }
 }
 
+function classBlock() {
+  if (keyIsDown(32)) {
+    theBlocks.push(new Block(width/2, height/2));
+    console.log(theBlocks);
+  }
+}
 
 
+// Code and logic of collisions taken from the Jeffrey thompson collision; rectangle/rectangle
+function fallingCollision(r1y, r1h, r2y, r2h) {
+  if (r1y + r1h >= r2y &&       // r1 top edge past r2 bottom
+    r1y <= r2y + r2h) {
+    console.log(true);    
+  }
+}
 
+function sideCollision() {
+
+}
