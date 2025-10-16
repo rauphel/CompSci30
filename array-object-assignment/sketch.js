@@ -17,6 +17,7 @@ function setup() {
   // screenHeight = height;
   // aBlock = spawnBlocks(width/2);
   screen = createScreen();
+
 }
 
 function draw() {
@@ -26,7 +27,7 @@ function draw() {
 
   // gravity();
   // showBlocks();
-  classBlock();
+  // classBlock();
 
   for (let aBlock of theBlocks) {
     aBlock.gravity();
@@ -62,6 +63,11 @@ class Block {
   
   gravity() {
     if (this.y < height - blockSize) {
+      for (let i = 0; i < theBlocks.length && theBlocks.length > 1; i++) {
+        if (Block !== theBlocks[i]){
+          fallCollision(this.y, this.h, theBlocks[i].y, theBlocks[i].h);
+        }
+      }
       this.y += 5;
     }
   }
@@ -140,20 +146,21 @@ function blockPosistion() {
 
 function mousePressed() {
   if (mouseButton === CENTER) {
-    spawnBlocks(width/2);
+    // spawnBlocks(width/2);
+    theBlocks.push(new Block(width/2, height/2));
+
   }
 }
 
-function classBlock() {
-  if (keyIsDown(32)) {
-    theBlocks.push(new Block(width/2, height/2));
-    console.log(theBlocks);
-  }
-}
+// function classBlock() {
+//   if (keyIsDown(32)) {
+//     console.log(theBlocks);
+//   }
+// }
 
 
 // Code and logic of collisions taken from the Jeffrey thompson collision; rectangle/rectangle
-function fallingCollision(r1y, r1h, r2y, r2h) {
+function fallCollision(r1y, r1h, r2y, r2h) {
   if (r1y + r1h >= r2y &&       // r1 top edge past r2 bottom
     r1y <= r2y + r2h) {
     console.log(true);    

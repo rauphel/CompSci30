@@ -6,6 +6,7 @@
 - [Generative Art](generative-art)
 - [Perlin Noise](perlin-noise)
 - [Perlin bubbles](perlin-bubbles)
+- [terrain generation](terrain)
 
 ## Assignments
 - [interactivescene](interactivescene)
