@@ -30,6 +30,7 @@ function draw() {
   // classBlock();
 
   for (let aBlock of theBlocks) {
+    aBlock.collision();
     aBlock.gravity();
     aBlock.show();
   }
@@ -54,7 +55,7 @@ class Block {
     this.y = _y;
     this.w = blockSize * ceil(random(4));
     this.h = blockSize;
-    this.hit = false;
+    this.fall = false;
   }
 
   show() {
@@ -64,20 +65,22 @@ class Block {
   
   gravity() {
     if (this.y < height - blockSize) {
-      for (let i = 0; i < theBlocks.length; i++) {
-        if (this.y !== theBlocks[i].y){
-          this.hit = fallCollision(this.x, this.y, this.w, this.h, 
-            theBlocks[i].x, theBlocks[i].y, theBlocks[i].w, theBlocks[i].h);
-        }
-      }
-      if (!this.hit) {
+      if (!this.fall) {
         this.y += 5;
       }
     }
   }
-
-  collision() {
-    
+  
+  collision() {    
+    for (let i = 0; i < theBlocks.length; i++) {
+      if (this.y !== theBlocks[i].y){
+        this.fall = fallCollision(this.x, this.y, this.w, this.h, 
+          theBlocks[i].x, theBlocks[i].y, theBlocks[i].w, theBlocks[i].h);
+      }
+      if (this.fall) {
+        break;
+      }
+    }    
   }
 }
 
@@ -108,6 +111,7 @@ function dragBlock() {
       else if (aBlock.x + aBlock.w >= screen.x + screen.w) {
         aBlock.x = screen.x + screen.w - aBlock.w;
       }
+      sideCollision(aBlock);
     }
   }
 }
@@ -151,7 +155,7 @@ function blockPosistion() {
 function mousePressed() {
   if (mouseButton === CENTER) {
     // spawnBlocks(width/2);
-    theBlocks.push(new Block(width/2, height/2));
+    theBlocks.push(new Block(width/2, 0));
 
   }
 }
@@ -165,17 +169,32 @@ function mousePressed() {
 
 // Code and logic of collisions taken from the Jeffrey thompson collision; rectangle/rectangle
 function fallCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
-  if (r1x + r1w >= r2x &&    // r1 right edge past r2 left
+  const COLLISION_BUFFER = 0.1;
+  r1x += COLLISION_BUFFER;
+  r1w -= COLLISION_BUFFER;
+  r2x += COLLISION_BUFFER;
+  r2w -= COLLISION_BUFFER;
+
+  if (r1y < r2y &&
+      r1x + r1w >= r2x &&    // r1 right edge past r2 left
       r1x <= r2x + r2w &&
-    r1y + r1h >= r2y &&       // r1 top edge past r2 bottom
-    r1y <= r2y + r2h) {
-      console.log(true);
+      r1y + r1h >= r2y &&       // r1 top edge past r2 bottom
+      r1y <= r2y + r2h) {
+    console.log(true);
     return true;
   }
+  console.log(false);
   return false;
 }
 
-function sideCollision() {
+function sideCollision(movingBlock) {
+  for (let i = 0; i < theBlocks.length; i++) {
+    if (movingBlock.y !== theBlocks[i].y) {
+      if (movingBlock.x + movingBlock.w >= theBlocks[i].x ) {// r1 right edge past r2 left && movingBlock.x <= movingBlock.x +movingBlock.w
+        movingBlock.x = theBlocks[i].x - movingBlock.w; //need to account for the block that I am moving's height so it doesnt spasm out
+      }
+    }  
+  }
 
 }
 
