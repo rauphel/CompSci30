@@ -169,6 +169,7 @@ function fallCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
       r1x <= r2x + r2w &&
     r1y + r1h >= r2y &&       // r1 top edge past r2 bottom
     r1y <= r2y + r2h) {
+      console.log(true);
     return true;
   }
   return false;
@@ -176,4 +177,10 @@ function fallCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
 
 function sideCollision() {
 
+}
+
+function keyPressed() {
+  if (keyCode === 32) {
+    theBlocks.pop();
+  }
 }

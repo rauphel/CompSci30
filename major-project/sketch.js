@@ -7,9 +7,18 @@
 
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth, windowHeight, WEBGL);
 }
 
 function draw() {
   background(220);
+}
+
+class airplane {
+  constructor() {
+    this.x = 0;
+    this.x = 0;
+    
+  }
+
 }
