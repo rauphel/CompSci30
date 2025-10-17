@@ -54,6 +54,7 @@ class Block {
     this.y = _y;
     this.w = blockSize * ceil(random(4));
     this.h = blockSize;
+    this.hit = false;
   }
 
   show() {
@@ -63,12 +64,15 @@ class Block {
   
   gravity() {
     if (this.y < height - blockSize) {
-      for (let i = 0; i < theBlocks.length && theBlocks.length > 1; i++) {
-        if (Block !== theBlocks[i]){
-          fallCollision(this.y, this.h, theBlocks[i].y, theBlocks[i].h);
+      for (let i = 0; i < theBlocks.length; i++) {
+        if (this.y !== theBlocks[i].y){
+          this.hit = fallCollision(this.x, this.y, this.w, this.h, 
+            theBlocks[i].x, theBlocks[i].y, theBlocks[i].w, theBlocks[i].h);
         }
       }
-      this.y += 5;
+      if (!this.hit) {
+        this.y += 5;
+      }
     }
   }
 
@@ -160,11 +164,14 @@ function mousePressed() {
 
 
 // Code and logic of collisions taken from the Jeffrey thompson collision; rectangle/rectangle
-function fallCollision(r1y, r1h, r2y, r2h) {
-  if (r1y + r1h >= r2y &&       // r1 top edge past r2 bottom
+function fallCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
+  if (r1x + r1w >= r2x &&    // r1 right edge past r2 left
+      r1x <= r2x + r2w &&
+    r1y + r1h >= r2y &&       // r1 top edge past r2 bottom
     r1y <= r2y + r2h) {
-    console.log(true);    
+    return true;
   }
+  return false;
 }
 
 function sideCollision() {
