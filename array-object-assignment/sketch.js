@@ -8,7 +8,7 @@
 let blockSize = 50;
 let spawnHeight;
 let screen;
-let screenWidth = 500;
+let screenWidth = 450;
 let theBlocks = [];
 
 function setup() {
@@ -23,13 +23,15 @@ function setup() {
 function draw() {
   background(220);
   // screen();
+  fill('white')
   rect(screen.x, screen.y, screen.w, screen.h);
 
   // gravity();
   // showBlocks();
   // classBlock();
 
-  for (let aBlock of theBlocks) {
+  clearRow();
+  for (let aBlock of theBlocks) {   
     aBlock.collision();
     aBlock.gravity();
     aBlock.show();
@@ -59,7 +61,7 @@ class Block {
   }
 
   show() {
-    fill('white');
+    fill('gray');
     rect(this.x, this.y, this.w, this.h);
   }
   
@@ -82,6 +84,7 @@ class Block {
       }
     }    
   }
+
 }
 
 // function showBlocks() {
@@ -156,7 +159,7 @@ function mousePressed() {
   if (mouseButton === CENTER) {
     // spawnBlocks(width/2);
     theBlocks.push(new Block(width/2, 0));
-
+    console.log(screen.h - blockSize)
   }
 }
 
@@ -180,26 +183,48 @@ function fallCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
       r1x <= r2x + r2w &&
       r1y + r1h >= r2y &&       // r1 top edge past r2 bottom
       r1y <= r2y + r2h) {
-    console.log(true);
+    // console.log(true);
     return true;
   }
-  console.log(false);
+  // console.log(false);
   return false;
 }
 
 function sideCollision(movingBlock) {
-  for (let i = 0; i < theBlocks.length; i++) {
-    if (movingBlock.y !== theBlocks[i].y) {
-      if (movingBlock.x + movingBlock.w >= theBlocks[i].x ) {// r1 right edge past r2 left && movingBlock.x <= movingBlock.x +movingBlock.w
-        movingBlock.x = theBlocks[i].x - movingBlock.w; //need to account for the block that I am moving's height so it doesnt spasm out
+  for (let i = 0; i < theBlocks.length && theBlocks.length >1; i++) {
+    if (movingBlock.y === theBlocks[i].y && movingBlock !== theBlocks[i]) {
+      if (movingBlock.x + movingBlock.w >= theBlocks[i].x && movingBlock.x <= theBlocks[i].x) {
+        movingBlock.x = theBlocks[i].x - movingBlock.w;
+      }
+      else if (movingBlock.x <= theBlocks[i].x + theBlocks[i].w && movingBlock.x >= theBlocks[i].x) {
+        movingBlock.x = theBlocks[i].x + theBlocks[i].w;
       }
     }  
   }
-
 }
 
 function keyPressed() {
   if (keyCode === 32) {
     theBlocks.pop();
+  }
+}
+
+function clearRow() {
+  for (let row = screen.h - blockSize; row > 0; row -= blockSize) {
+    let rowWidth = 0;
+    let indices = []
+    for (let i = 0; i < theBlocks.length; i++) {
+      console.log(theBlocks[i].y)
+      console.log(row)
+      if (theBlocks[i].y === row) {
+        rowWidth += theBlocks[i].w;
+        indices.push(i)
+      }
+    }
+    if (rowWidth === screen.w) {
+      for (let i of indices) {
+        theBlocks.splice(i, 1);
+      }
+    }
   }
 }
