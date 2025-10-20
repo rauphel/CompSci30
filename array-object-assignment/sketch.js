@@ -23,7 +23,7 @@ function setup() {
 function draw() {
   background(220);
   // screen();
-  fill('white')
+  fill('white');
   rect(screen.x, screen.y, screen.w, screen.h);
 
   // gravity();
@@ -70,12 +70,21 @@ class Block {
       if (!this.fall) {
         this.y += 5;
       }
+      else {
+        let yPos = screen.h - this.y;
+        yPos /= blockSize;
+        yPos = round(yPos);
+        this.y = screen.h - blockSize * yPos;
+      }
+    }
+    else {
+      this.y = screen.h - this.h;
     }
   }
   
   collision() {    
     for (let i = 0; i < theBlocks.length; i++) {
-      if (this.y !== theBlocks[i].y){
+      if (this.y !== theBlocks[i].y){ // fix so it falls after it splices a row
         this.fall = fallCollision(this.x, this.y, this.w, this.h, 
           theBlocks[i].x, theBlocks[i].y, theBlocks[i].w, theBlocks[i].h);
       }
@@ -159,7 +168,7 @@ function mousePressed() {
   if (mouseButton === CENTER) {
     // spawnBlocks(width/2);
     theBlocks.push(new Block(width/2, 0));
-    console.log(screen.h - blockSize)
+    console.log(screen.h - blockSize);
   }
 }
 
@@ -183,7 +192,7 @@ function fallCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
       r1x <= r2x + r2w &&
       r1y + r1h >= r2y &&       // r1 top edge past r2 bottom
       r1y <= r2y + r2h) {
-    // console.log(true);
+    console.log(true);
     return true;
   }
   // console.log(false);
@@ -212,18 +221,23 @@ function keyPressed() {
 function clearRow() {
   for (let row = screen.h - blockSize; row > 0; row -= blockSize) {
     let rowWidth = 0;
-    let indices = []
+    let indices = [];
     for (let i = 0; i < theBlocks.length; i++) {
-      console.log(theBlocks[i].y)
-      console.log(row)
+      // console.log(theBlocks[i].y);
+      // console.log(row);
       if (theBlocks[i].y === row) {
         rowWidth += theBlocks[i].w;
-        indices.push(i)
+        indices.push(i);
+        // console.log(true);
       }
     }
     if (rowWidth === screen.w) {
-      for (let i of indices) {
-        theBlocks.splice(i, 1);
+      console.log(rowWidth === screen.w);
+      for (let i = 0; i < indices.length; i++) {
+        theBlocks.splice(indices[i], 1);
+        if (i !== indices.length - 1) {
+          indices[i+1] -= 1 + i;
+        }
       }
     }
   }
