@@ -192,7 +192,6 @@ function fallCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
       r1x <= r2x + r2w &&
       r1y + r1h >= r2y &&       // r1 top edge past r2 bottom
       r1y <= r2y + r2h) {
-    console.log(true);
     return true;
   }
   // console.log(false);
@@ -216,6 +215,9 @@ function keyPressed() {
   if (keyCode === 32) {
     theBlocks.pop();
   }
+  if (keyCode === 68) {
+    console.log(theBlocks);
+  }
 }
 
 function clearRow() {
@@ -230,6 +232,7 @@ function clearRow() {
         indices.push(i);
         // console.log(true);
       }
+      theBlocks[i].fall = !theBlocks[i].fall;
     }
     if (rowWidth === screen.w) {
       console.log(rowWidth === screen.w);
