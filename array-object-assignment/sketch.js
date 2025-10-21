@@ -83,6 +83,7 @@ class Block {
   }
   
   collision() {    
+
     for (let i = 0; i < theBlocks.length; i++) {
       if (this.y !== theBlocks[i].y){ // fix so it falls after it splices a row
         this.fall = fallCollision(this.x, this.y, this.w, this.h, 
@@ -232,7 +233,7 @@ function clearRow() {
         indices.push(i);
         // console.log(true);
       }
-      theBlocks[i].fall = !theBlocks[i].fall;
+
     }
     if (rowWidth === screen.w) {
       console.log(rowWidth === screen.w);
@@ -241,6 +242,9 @@ function clearRow() {
         if (i !== indices.length - 1) {
           indices[i+1] -= 1 + i;
         }
+      }
+      for (let aBlock of theBlocks) {
+        aBlock.fall = false;
       }
     }
   }
