@@ -10,6 +10,7 @@ let spawnHeight;
 let screen;
 let screenWidth = 450;
 let theBlocks = [];
+let falling = true;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -31,11 +32,18 @@ function draw() {
   // classBlock();
 
   clearRow();
-  for (let aBlock of theBlocks) {   
+  for (let aBlock of theBlocks) {
     aBlock.collision();
     aBlock.gravity();
     aBlock.show();
+    if (aBlock.fall === true && falling) {
+      falling = false;
+    }
+    if (aBlock.fall === false && !falling) {
+      falling = true;
+    }   
   }
+  console.log(falling);
 }
 
 // function spawnBlocks(x) {
@@ -79,11 +87,11 @@ class Block {
     }
     else {
       this.y = screen.h - this.h;
+      this.fall = true;
     }
   }
   
   collision() {    
-
     for (let i = 0; i < theBlocks.length; i++) {
       if (this.y !== theBlocks[i].y){ // fix so it falls after it splices a row
         this.fall = fallCollision(this.x, this.y, this.w, this.h, 
@@ -92,9 +100,8 @@ class Block {
       if (this.fall) {
         break;
       }
-    }    
+    } 
   }
-
 }
 
 // function showBlocks() {
@@ -188,7 +195,7 @@ function fallCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
   r2x += COLLISION_BUFFER;
   r2w -= COLLISION_BUFFER;
 
-  if (r1y < r2y &&
+  if (r1y < r2y && 
       r1x + r1w >= r2x &&    // r1 right edge past r2 left
       r1x <= r2x + r2w &&
       r1y + r1h >= r2y &&       // r1 top edge past r2 bottom
@@ -200,7 +207,7 @@ function fallCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
 }
 
 function sideCollision(movingBlock) {
-  for (let i = 0; i < theBlocks.length && theBlocks.length >1; i++) {
+  for (let i = 0; i < theBlocks.length && theBlocks.length > 1 ; i++) {
     if (movingBlock.y === theBlocks[i].y && movingBlock !== theBlocks[i]) {
       if (movingBlock.x + movingBlock.w >= theBlocks[i].x && movingBlock.x <= theBlocks[i].x) {
         movingBlock.x = theBlocks[i].x - movingBlock.w;
@@ -222,29 +229,31 @@ function keyPressed() {
 }
 
 function clearRow() {
-  for (let row = screen.h - blockSize; row > 0; row -= blockSize) {
-    let rowWidth = 0;
-    let indices = [];
-    for (let i = 0; i < theBlocks.length; i++) {
-      // console.log(theBlocks[i].y);
-      // console.log(row);
-      if (theBlocks[i].y === row) {
-        rowWidth += theBlocks[i].w;
-        indices.push(i);
-        // console.log(true);
-      }
-
-    }
-    if (rowWidth === screen.w) {
-      console.log(rowWidth === screen.w);
-      for (let i = 0; i < indices.length; i++) {
-        theBlocks.splice(indices[i], 1);
-        if (i !== indices.length - 1) {
-          indices[i+1] -= 1 + i;
+  if (!falling) {
+    for (let row = screen.h - blockSize; row > 0; row -= blockSize) {
+      let rowWidth = 0;
+      let indices = [];
+      for (let i = 0; i < theBlocks.length; i++) {
+        // console.log(theBlocks[i].y);
+        // console.log(row);
+        if (theBlocks[i].y === row) {
+          rowWidth += theBlocks[i].w;
+          indices.push(i);
+          // console.log(true);
         }
+  
       }
-      for (let aBlock of theBlocks) {
-        aBlock.fall = false;
+      if (rowWidth === screen.w) {
+        console.log(rowWidth === screen.w);
+        for (let i = 0; i < indices.length; i++) {
+          theBlocks.splice(indices[i], 1);
+          if (i !== indices.length - 1) {
+            indices[i+1] -= 1 + i;
+          }
+        }
+        for (let aBlock of theBlocks) {
+          aBlock.fall = false;
+        }
       }
     }
   }
