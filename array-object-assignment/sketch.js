@@ -11,6 +11,7 @@ let screen;
 let screenWidth = 450;
 let theBlocks = [];
 let falling = true;
+let dragging = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -35,13 +36,10 @@ function draw() {
   for (let aBlock of theBlocks) {
     aBlock.collision();
     aBlock.gravity();
+    checkFalling(aBlock);
+    moveBlock(aBlock);
     aBlock.show();
-    if (aBlock.fall === true && falling) {
-      falling = false;
-    }
-    if (aBlock.fall === false && !falling) {
-      falling = true;
-    }   
+    
   }
   console.log(falling);
 }
@@ -66,6 +64,7 @@ class Block {
     this.w = blockSize * ceil(random(4));
     this.h = blockSize;
     this.fall = false;
+    this.moving = false;
   }
 
   show() {
@@ -75,7 +74,7 @@ class Block {
   
   gravity() {
     if (this.y < height - blockSize) {
-      if (!this.fall) {
+      if (!this.fall && !dragging) {
         this.y += 5;
       }
       else {
@@ -120,29 +119,36 @@ class Block {
 //   }
 // }
 
-function dragBlock() {
+function pressBlock() {
   for (let aBlock of theBlocks) {
     if (mouseX >= aBlock.x && mouseX <= aBlock.x + aBlock.w 
         && mouseY >= aBlock.y && mouseY <= aBlock.y + aBlock.h) {
-      aBlock.x = mouseX - aBlock.w/2;
-      if (aBlock.x <= screen.x) {
-        aBlock.x = screen.x;
-      }
-      else if (aBlock.x + aBlock.w >= screen.x + screen.w) {
-        aBlock.x = screen.x + screen.w - aBlock.w;
-      }
-      sideCollision(aBlock);
+      dragging = true;
+      aBlock.moving = true;
+
     }
   }
 }
 
-function mouseDragged() {
-  if (mouseButton === LEFT) {
-    dragBlock();
+function moveBlock(aBlock) {
+  if (aBlock.moving) {
+    aBlock.x = mouseX - aBlock.w/2;
+    if (aBlock.x <= screen.x) {
+      aBlock.x = screen.x;
+    }
+    else if (aBlock.x + aBlock.w >= screen.x + screen.w) {
+      aBlock.x = screen.x + screen.w - aBlock.w;
+    }
   }
+  sideCollision(aBlock);
 }
 
+
 function mouseReleased() {
+  dragging = false;
+  for (let aBlock of theBlocks) {
+    aBlock.moving = false;
+  }
   blockPosistion();
 }
 
@@ -173,6 +179,9 @@ function blockPosistion() {
 }
 
 function mousePressed() {
+  if (mouseButton === LEFT && !falling) {
+    pressBlock();
+  }
   if (mouseButton === CENTER) {
     // spawnBlocks(width/2);
     theBlocks.push(new Block(width/2, 0));
@@ -257,4 +266,13 @@ function clearRow() {
       }
     }
   }
+}
+
+function checkFalling(aBlock) {
+  if (aBlock.fall === true && falling) {
+    falling = false;
+  }
+  if (aBlock.fall === false && !falling) {
+    falling = true;
+  } 
 }
