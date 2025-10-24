@@ -12,6 +12,8 @@ let screenWidth = 450;
 let theBlocks = [];
 let falling = true;
 let dragging = false;
+let leftSide = false;
+let rightSide = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -41,7 +43,7 @@ function draw() {
     aBlock.show();
     
   }
-  console.log(falling);
+  // console.log(falling);
 }
 
 // function spawnBlocks(x) {
@@ -132,7 +134,12 @@ function pressBlock() {
 
 function moveBlock(aBlock) {
   if (aBlock.moving) {
-    aBlock.x = mouseX - aBlock.w/2;
+    console.log(abs(mouseX - aBlock.x))
+    if (abs(mouseX - (aBlock.x + aBlock.w/2)) < blockSize) {
+
+      aBlock.x = mouseX - aBlock.w/2;
+    }
+    sideCollision(aBlock);
     if (aBlock.x <= screen.x) {
       aBlock.x = screen.x;
     }
@@ -140,7 +147,6 @@ function moveBlock(aBlock) {
       aBlock.x = screen.x + screen.w - aBlock.w;
     }
   }
-  sideCollision(aBlock);
 }
 
 
@@ -219,12 +225,14 @@ function sideCollision(movingBlock) {
   for (let i = 0; i < theBlocks.length && theBlocks.length > 1 ; i++) {
     if (movingBlock.y === theBlocks[i].y && movingBlock !== theBlocks[i]) {
       if (movingBlock.x + movingBlock.w >= theBlocks[i].x && movingBlock.x <= theBlocks[i].x) {
+
         movingBlock.x = theBlocks[i].x - movingBlock.w;
       }
       else if (movingBlock.x <= theBlocks[i].x + theBlocks[i].w && movingBlock.x >= theBlocks[i].x) {
+
         movingBlock.x = theBlocks[i].x + theBlocks[i].w;
       }
-    }  
+    }
   }
 }
 
@@ -269,10 +277,10 @@ function clearRow() {
 }
 
 function checkFalling(aBlock) {
-  if (aBlock.fall === true && falling) {
+  if (aBlock.fall === true) {
     falling = false;
   }
-  if (aBlock.fall === false && !falling) {
+  if (aBlock.fall === false) {
     falling = true;
   } 
 }
