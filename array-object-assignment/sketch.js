@@ -134,12 +134,12 @@ function pressBlock() {
 
 function moveBlock(aBlock) {
   if (aBlock.moving) {
-    console.log(abs(mouseX - aBlock.x))
-    if (abs(mouseX - (aBlock.x + aBlock.w/2)) < blockSize) {
-
-      aBlock.x = mouseX - aBlock.w/2;
+    let side = sideCollision(aBlock);
+    aBlock.x = mouseX - aBlock.w/2;
+    if (aBlock.x >= side) {
+      aBlock.x = side;
     }
-    sideCollision(aBlock);
+
     if (aBlock.x <= screen.x) {
       aBlock.x = screen.x;
     }
@@ -222,18 +222,20 @@ function fallCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
 }
 
 function sideCollision(movingBlock) {
+  let edge;
   for (let i = 0; i < theBlocks.length && theBlocks.length > 1 ; i++) {
     if (movingBlock.y === theBlocks[i].y && movingBlock !== theBlocks[i]) {
       if (movingBlock.x + movingBlock.w >= theBlocks[i].x && movingBlock.x <= theBlocks[i].x) {
-
-        movingBlock.x = theBlocks[i].x - movingBlock.w;
+        edge = theBlocks[i].x - movingBlock.w;
+        // movingBlock.x = theBlocks[i].x - movingBlock.w;
       }
       else if (movingBlock.x <= theBlocks[i].x + theBlocks[i].w && movingBlock.x >= theBlocks[i].x) {
-
-        movingBlock.x = theBlocks[i].x + theBlocks[i].w;
+        edge = theBlocks[i].x + theBlocks[i].w;
+        // movingBlock.x = theBlocks[i].x + theBlocks[i].w;
       }
     }
   }
+  return edge;
 }
 
 function keyPressed() {
