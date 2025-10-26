@@ -62,6 +62,7 @@ class Block {
     this.h = blockSize;
     this.fall = false;
     this.moving = false;
+    this.inPlay = false;
   }
 
   show() {
@@ -70,42 +71,49 @@ class Block {
   }
   
   gravity() {
-    if (this.y < height - blockSize) {
-      if (!this.fall && !dragging) {
-        this.y += 5;
+    if (this.inPlay) {
+      if (this.y < screen.h - blockSize) {
+        if (!this.fall && !dragging) {
+          this.y += 5;
+        }
+        else {
+          let yPos = screen.h - this.y;
+          yPos /= blockSize;
+          yPos = round(yPos);
+          this.y = screen.h - blockSize * yPos;
+        }
       }
       else {
-        let yPos = screen.h - this.y;
-        yPos /= blockSize;
-        yPos = round(yPos);
-        this.y = screen.h - blockSize * yPos;
+        this.y = screen.h - this.h;
+        this.fall = true;
       }
-    }
-    else {
-      this.y = screen.h - this.h;
-      this.fall = true;
     }
   }
   
   collision() {    
-    for (let i = 0; i < theBlocks.length; i++) {
-      if (this.y !== theBlocks[i].y){ // fix so it falls after it splices a row
-        this.fall = fallCollision(this.x, this.y, this.w, this.h, 
-          theBlocks[i].x, theBlocks[i].y, theBlocks[i].w, theBlocks[i].h);
-      }
-      if (this.fall) {
-        break;
-      }
-    } 
-  }
+    if (this.inPlay) {
+
+      for (let i = 0; i < theBlocks.length; i++) {
+        if (this.y !== theBlocks[i].y){ // fix so it falls after it splices a row
+          this.fall = fallCollision(this.x, this.y, this.w, this.h, 
+            theBlocks[i].x, theBlocks[i].y, theBlocks[i].w, theBlocks[i].h);
+        }
+        if (this.fall) {
+          break;
+        }
+      } 
+    }
+    }
 }
 
 function pressBlock() {
   for (let aBlock of theBlocks) {
-    if (mouseX >= aBlock.x && mouseX <= aBlock.x + aBlock.w 
-        && mouseY >= aBlock.y && mouseY <= aBlock.y + aBlock.h) {
-      dragging = true;
-      aBlock.moving = true;
+    if (aBlock.inPlay) {
+      if (mouseX >= aBlock.x && mouseX <= aBlock.x + aBlock.w 
+          && mouseY >= aBlock.y && mouseY <= aBlock.y + aBlock.h) {
+        dragging = true;
+        aBlock.moving = true;
+      }
     }
   }
 }
@@ -251,27 +259,27 @@ function clearRow() {
 }
 
 function checkFalling(aBlock) {
-  if (aBlock.fall === true) {
-    falling = false;
+  if (aBlock.inPlay) {
+    if (aBlock.fall === true) {
+      falling = false;
+    }
+    if (aBlock.fall === false) {
+      falling = true;
+    } 
+
   }
-  if (aBlock.fall === false) {
-    falling = true;
-  } 
 }
 
 function spawnBlocks() {
   let randomIteration = ceil(random(4));
   
   for (let i = 0; i < randomIteration; i++) {
-    let randomPosition = random(screen.x, screen.x + screen.w - blockSize) - screen.x;
+    let randomPosition = random(screen.x - 2 * blockSize, screen.x + screen.w - blockSize) - screen.x;
     randomPosition = adjustPosition(randomPosition);
     console.log(randomPosition);
     let newBlock = new Block(randomPosition, screen.h + blockSize);
-    if (newBlock.x > screen.x && (newBlock.x + newBlock.w < screen.x + screen.w)) {
-      if (theBlocks.length > 1 ) {
-        
-      }
-      theBlocks.push(new Block(randomPosition, screen.h + blockSize));
+    if (newBlock.x >= screen.x && (newBlock.x + newBlock.w <= screen.x + screen.w)) {
+      theBlocks.push(new Block(randomPosition, screen.h));
     }
     
   }
