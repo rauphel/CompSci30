@@ -60,7 +60,7 @@ class Block {
     this.y = _y;
     this.w = blockSize * ceil(random(4));
     this.h = blockSize;
-    this.fall = false;
+    this.hit = false;
     this.moving = false;
     this.inPlay = false;
   }
@@ -73,7 +73,7 @@ class Block {
   gravity() {
     if (this.inPlay) {
       if (this.y < screen.h - blockSize) {
-        if (!this.fall && !dragging) {
+        if (!this.hit && !dragging) {
           this.y += 5;
         }
         else {
@@ -85,21 +85,20 @@ class Block {
       }
       else {
         this.y = screen.h - this.h;
-        this.fall = true;
+        this.hit = true;
       }
     }
   }
   
   collision() {    
     if (this.inPlay) {
-
       for (let i = 0; i < theBlocks.length; i++) {
         if (this.y !== theBlocks[i].y){ // fix so it falls after it splices a row
-          this.fall = fallCollision(this.x, this.y, this.w, this.h, 
+          this.hit = fallCollision(this.x, this.y, this.w, this.h, 
             theBlocks[i].x, theBlocks[i].y, theBlocks[i].w, theBlocks[i].h);
-        }
-        if (this.fall) {
-          break;
+          if (this.hit) {
+              break;
+          }
         }
       } 
     }
@@ -154,7 +153,7 @@ function createScreen() {
     x: width/2 - screenWidth/2,
     y: 0,
     w: screenWidth,
-    h: height - blockSize,
+    h: height,
   };
   return screen;
 }
@@ -182,8 +181,6 @@ function mousePressed() {
     pressBlock();
   }
   if (mouseButton === CENTER) {
-    // theBlocks.push(new Block(width/2, 0));
-    // console.log(screen.h - blockSize);
     spawnBlocks();
   }
 }
@@ -203,7 +200,6 @@ function fallCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
       r1y <= r2y + r2h) {
     return true;
   }
-  // console.log(false);
   return false;
 }
 
@@ -229,6 +225,12 @@ function keyPressed() {
   if (keyCode === 68) {
     console.log(theBlocks); // press d to check blocks
   }
+    if (keyCode === 65) {
+    let aBlock = new Block(width/2, 0);
+    aBlock.inPlay = true;
+    theBlocks.push(aBlock);
+
+  }
 }
 
 function clearRow() {
@@ -243,7 +245,6 @@ function clearRow() {
         }
       }
       if (rowWidth === screen.w) {
-        console.log(rowWidth === screen.w);
         for (let i = 0; i < indices.length; i++) {
           theBlocks.splice(indices[i], 1);
           if (i !== indices.length - 1) {
@@ -251,7 +252,7 @@ function clearRow() {
           }
         }
         for (let aBlock of theBlocks) {
-          aBlock.fall = false;
+          aBlock.hit = false;
         }
       }
     }
@@ -260,27 +261,42 @@ function clearRow() {
 
 function checkFalling(aBlock) {
   if (aBlock.inPlay) {
-    if (aBlock.fall === true) {
+    if (aBlock.hit === true) {
       falling = false;
     }
-    if (aBlock.fall === false) {
+    if (aBlock.hit === false) {
       falling = true;
     } 
-
   }
 }
 
 function spawnBlocks() {
-  let randomIteration = ceil(random(4));
-  
-  for (let i = 0; i < randomIteration; i++) {
-    let randomPosition = random(screen.x - 2 * blockSize, screen.x + screen.w - blockSize) - screen.x;
-    randomPosition = adjustPosition(randomPosition);
-    console.log(randomPosition);
-    let newBlock = new Block(randomPosition, screen.h + blockSize);
-    if (newBlock.x >= screen.x && (newBlock.x + newBlock.w <= screen.x + screen.w)) {
-      theBlocks.push(new Block(randomPosition, screen.h));
+  for (let row = screen.h; row < screen.h + 2 * blockSize; row += blockSize) {
+    let randomBlocks = [];
+    for (let column = screen.x; column < screen.x + screen.w; column += blockSize) {
+      let newBlock = new Block(column, row);
+      let spawnChance = random(100); // make to Constant
+      if (randomBlocks.length >= 1) {
+        let _xPos = newBlock.x;
+        while (_xPos < randomBlocks[randomBlocks.length - 1].x + randomBlocks[randomBlocks.length - 1].w) {
+          _xPos += blockSize;
+        }
+        newBlock.x = _xPos;
+        if (newBlock.x + newBlock.w < screen.x + screen.w) {
+          column = _xPos;
+          if (spawnChance > 25) {
+            randomBlocks.push(newBlock);
+          }
+        }
+      }
+      else if (spawnChance > 25) {
+        randomBlocks.push(newBlock);
+      }
     }
-    
+    theBlocks = theBlocks.concat(randomBlocks);
+  }
+  for (let aBlock of theBlocks) {
+    aBlock.y -= 3 * blockSize;
+    aBlock.inPlay = true;
   }
 }
