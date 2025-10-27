@@ -86,12 +86,12 @@ class Block {
           this.hit = fallCollision(this.x, this.y, this.w, this.h, 
             theBlocks[i].x, theBlocks[i].y, theBlocks[i].w, theBlocks[i].h);
           if (this.hit) {
-              break;
+            break;
           }
         }
       } 
     }
-    }
+  }
 }
 
 function pressBlock() {
@@ -104,7 +104,7 @@ function pressBlock() {
         aBlock.color = "black";
         lastPosition = aBlock.x;
         lastMoved = aBlock;
-        mouseBuffer = mouseX - aBlock.x
+        mouseBuffer = mouseX - aBlock.x;
       }
     }
   }
@@ -165,11 +165,11 @@ function blockPosistion() { // adjusts the position of all the blocks
 }
 
 function adjustPosition(xPosition) { // adjusts the position to be sorted into columns
-      xPosition /= BLOCK_SIZE;
-      xPosition = round(xPosition);
-      xPosition *= BLOCK_SIZE;
-      xPosition += screen.x;
-      return xPosition;
+  xPosition /= BLOCK_SIZE;
+  xPosition = round(xPosition);
+  xPosition *= BLOCK_SIZE;
+  xPosition += screen.x;
+  return xPosition;
 }
 
 function mousePressed() {
@@ -287,6 +287,6 @@ function spawnInterval() { // spawns blocks after 2 blocks are moved and stops f
 
 function scoreBoard() { // simple score tracker
   fill('black');
-  text("score: " + score, screen.x / 2, 3 * BLOCK_SIZE)
-  text("moves: " + moveCounter, screen.x / 2, 4 * BLOCK_SIZE)
+  text("score: " + score, screen.x / 2, 3 * BLOCK_SIZE);
+  text("moves: " + moveCounter, screen.x / 2, 4 * BLOCK_SIZE);
 }
