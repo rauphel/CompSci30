@@ -14,4 +14,5 @@
 ## Assignments
 - [interactivescene](interactivescene)
 - [Array and Objects Assignment](array-object-assignment)
+- [Grid Based Game](grid-based-game)
 - [Major Project](major-project)
