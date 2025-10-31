@@ -13,6 +13,13 @@ const TERRAIN_Y = 2000;
 
 // 2d array keeping the z values of each grid
 let terrainHeight;
+let seed;
+
+// player camera and coordinates
+let playerCam;
+let camX;
+let camY;
+let CamZ;
 
 function setup() {
   // sets up 3d renderer
@@ -21,13 +28,16 @@ function setup() {
   // sets terrain / grid size
   rows = TERRAIN_Y / SCALE;
   cols = TERRAIN_X / SCALE;
+  seed = random();
+  terrainHeight = generateHeight(cols, rows, seed);
 
-  terrainHeight = generateHeight(cols, rows, random());
+  // creates and sets player Camera
+  playerCam = createCamera();
 }
 
 function draw() {
   background(220);
-  terrainGeneration();
+  showTerrain();
 }
 
 function generateHeight(cols, rows, seed) {
@@ -47,9 +57,9 @@ function generateHeight(cols, rows, seed) {
   return newGrid;
 }
 
-function terrainGeneration() {
+function showTerrain() {
   translate(-TERRAIN_X/2, 0, -TERRAIN_Y/3);
-  rotateX(PI/3);
+  rotateX(PI/2);
 
   for (let y = 0; y < rows - 1; y++) {
     beginShape(TRIANGLE_STRIP);
@@ -63,6 +73,7 @@ function terrainGeneration() {
 
 function keyPressed() {
   if (key === "r") {
-    terrainHeight = generateHeight(cols, rows, random(100));
+    seed = random();
+    terrainHeight = generateHeight(cols, rows, seed);
   }
 }
