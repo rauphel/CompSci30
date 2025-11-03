@@ -9,7 +9,7 @@
 let rows, cols;
 const SCALE = 20;
 const TERRAIN_X = 1000;
-const TERRAIN_Y = 2000;
+const TERRAIN_Y = 1000;
 
 // 2d array keeping the z values of each grid
 let terrainHeight;
@@ -37,7 +37,11 @@ function setup() {
 
 function draw() {
   background(220);
-  showTerrain();
+
+  orbitControl();
+
+  showPlane();
+  // showTerrain();
 }
 
 function generateHeight(cols, rows, seed) {
@@ -58,7 +62,8 @@ function generateHeight(cols, rows, seed) {
 }
 
 function showTerrain() {
-  translate(-TERRAIN_X/2, 0, -TERRAIN_Y/3);
+  push();
+  translate(-TERRAIN_X/2, 0, -TERRAIN_Y/2);
   rotateX(PI/2);
 
   for (let y = 0; y < rows - 1; y++) {
@@ -69,6 +74,7 @@ function showTerrain() {
     }
     endShape();
   }
+  pop();
 }
 
 function keyPressed() {
@@ -76,4 +82,11 @@ function keyPressed() {
     seed = random();
     terrainHeight = generateHeight(cols, rows, seed);
   }
+}
+
+function showPlane() {
+  push();
+  rotateX(PI/2);
+  plane(TERRAIN_X, TERRAIN_Y);
+  pop();
 }
