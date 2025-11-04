@@ -21,6 +21,10 @@ let camX;
 let camY;
 let CamZ;
 
+const SPEED = 20;
+const MAX_PITCH = 180;
+const MIN_PITCH = 0;
+
 function setup() {
   // sets up 3d renderer
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -32,13 +36,13 @@ function setup() {
   terrainHeight = generateHeight(cols, rows, seed);
 
   // creates and sets player Camera
-  playerCam = createCamera();
+  playerCam = new Mover(0, 0, 0);
 }
 
 function draw() {
   background(220);
 
-  orbitControl();
+  // orbitControl();
 
   showPlane();
   // showTerrain();
@@ -89,4 +93,29 @@ function showPlane() {
   rotateX(PI/2);
   plane(TERRAIN_X, TERRAIN_Y);
   pop();
+}
+
+class Mover {
+  constructor(x, y, z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this.cam = createCamera();
+    this.cam.setPosition(this.x, this.y, this.z);
+
+    this.rX = 0;
+    this.rY = 0;
+  }
+
+  update() {
+    // this.cam.setPosition(this.x, this.y, this.z);
+    // this.cam.lookAt();
+  }
+
+  look() { //change to constants
+    this.rX = mouseX * 0.1;
+    this.rY = mouseY * 0.1;
+
+    this.rX = constrain(this.rX, MIN_PITCH, MAX_PITCH);
+  }
 }
