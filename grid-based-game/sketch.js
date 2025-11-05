@@ -21,6 +21,7 @@ let camX;
 let camY;
 let CamZ;
 
+
 const SPEED = 20;
 const MAX_PITCH = 180;
 const MIN_PITCH = 0;
@@ -45,7 +46,8 @@ function draw() {
   // orbitControl();
 
   showPlane();
-  // showTerrain();
+  showTerrain();
+  playerCam.update();
 }
 
 function generateHeight(cols, rows, seed) {
@@ -101,21 +103,34 @@ class Mover {
     this.y = y;
     this.z = z;
     this.cam = createCamera();
-    this.cam.setPosition(this.x, this.y, this.z);
+    // this.cam.setPosition(this.x, this.y, this.z);
 
-    this.rX = 0;
+    this.rX = -90;
     this.rY = 0;
+    this.camVector;
   }
 
   update() {
     // this.cam.setPosition(this.x, this.y, this.z);
     // this.cam.lookAt();
+    this.look();
+    this.pointCam();
   }
 
   look() { //change to constants
-    this.rX = mouseX * 0.1;
-    this.rY = mouseY * 0.1;
+    this.rX -= movedX;
+    this.rY -= movedY;
 
-    this.rX = constrain(this.rX, MIN_PITCH, MAX_PITCH);
+    // this.rX = constrain(this.rX, MIN_PITCH, MAX_PITCH);
+    this.rY = this.rY % 360;
   }
+
+  pointCam() {
+    this.camVector = p5.Vector.fromAngles(radians(this.rY), radians(this.rX));
+    this.cam.lookAt(this.camVector.x, this.camVector.y, this.camVector.z);
+  }
+}
+
+function doubleClicked() {
+  requestPointerLock();
 }
