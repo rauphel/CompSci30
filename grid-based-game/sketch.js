@@ -46,7 +46,7 @@ function draw() {
   // orbitControl();
 
   showPlane();
-  showTerrain();
+  // showTerrain();
   playerCam.update();
 }
 
@@ -103,10 +103,10 @@ class Mover {
     this.y = y;
     this.z = z;
     this.cam = createCamera();
-    // this.cam.setPosition(this.x, this.y, this.z);
+    this.cam.setPosition(this.x, this.y - 100, this.z);
 
-    this.rX = -90;
-    this.rY = 0;
+    this.rX = 0;
+    this.rY = 90;
     this.camVector;
   }
 
@@ -118,15 +118,15 @@ class Mover {
   }
 
   look() { //change to constants
-    this.rX -= movedX;
-    this.rY -= movedY;
+    this.rX -= movedX * 0.1;
+    this.rY += movedY * 0.1;
 
-    // this.rX = constrain(this.rX, MIN_PITCH, MAX_PITCH);
-    this.rY = this.rY % 360;
+    this.rY = constrain(this.rY, MIN_PITCH, MAX_PITCH); // figure out
+    this.rX = this.rX % 360;
   }
 
   pointCam() {
-    this.camVector = p5.Vector.fromAngles(radians(this.rY), radians(this.rX));
+    this.camVector = p5.Vector.fromAngles(radians(this.rY), radians(this.rX), 100); // figure out
     this.cam.lookAt(this.camVector.x, this.camVector.y, this.camVector.z);
   }
 }
