@@ -133,7 +133,7 @@ class Mover {
   }
 
   pointCam() {
-    this.camVector = p5.Vector.fromAngles(radians(this.rY), radians(this.rX), 100); // figure out
+    this.camVector = p5.Vector.fromAngles(radians(this.rY), radians(this.rX)); // figure out
     this.cam.lookAt(this.camVector.x, this.camVector.y, this.camVector.z);
     point(this.camVector.x, this.camVector.y, this.camVector.z);
   }
@@ -141,7 +141,7 @@ class Mover {
     if (keyIsDown(87)) {
       this.heading = p5.Vector.normalize(this.camVector);
       // translate(0, 0, -1);
-      this.cam.move(0, 0, -1);
+      this.cam.move(0, 0, 1);
     }
   }
 }
