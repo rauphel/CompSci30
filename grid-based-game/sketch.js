@@ -45,9 +45,11 @@ function draw() {
 
   // orbitControl();
 
-  showPlane();
-  // showTerrain();
+  // showPlane();
+  showTerrain();
+  
   playerCam.update();
+  
 }
 
 function generateHeight(cols, rows, seed) {
@@ -106,15 +108,20 @@ class Mover {
     this.cam.setPosition(this.x, this.y - 100, this.z);
 
     this.rX = 0;
-    this.rY = 90;
+    this.rY = 0;
     this.camVector;
+
+    this.heading;
   }
 
   update() {
     // this.cam.setPosition(this.x, this.y, this.z);
     // this.cam.lookAt();
+
     this.look();
     this.pointCam();
+    this.move();
+
   }
 
   look() { //change to constants
@@ -128,6 +135,14 @@ class Mover {
   pointCam() {
     this.camVector = p5.Vector.fromAngles(radians(this.rY), radians(this.rX), 100); // figure out
     this.cam.lookAt(this.camVector.x, this.camVector.y, this.camVector.z);
+    point(this.camVector.x, this.camVector.y, this.camVector.z);
+  }
+  move() {
+    if (keyIsDown(87)) {
+      this.heading = p5.Vector.normalize(this.camVector);
+      // translate(0, 0, -1);
+      this.cam.move(0, 0, -1);
+    }
   }
 }
 
