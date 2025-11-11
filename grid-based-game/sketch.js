@@ -105,7 +105,7 @@ class Mover {
     this.y = y;
     this.z = z;
     this.cam = createCamera();
-    this.cam.setPosition(this.x, this.y - 100, this.z);
+    this.cam.setPosition(this.x, this.y, this.z);
 
     this.rX = 0;
     this.rY = 0;
@@ -119,8 +119,8 @@ class Mover {
     // this.cam.lookAt();
 
     this.look();
-    this.pointCam();
     this.move();
+    this.pointCam();
 
   }
 
@@ -134,14 +134,20 @@ class Mover {
 
   pointCam() {
     this.camVector = p5.Vector.fromAngles(radians(this.rY), radians(this.rX)); // figure out
-    this.cam.lookAt(this.camVector.x, this.camVector.y, this.camVector.z);
-    point(this.camVector.x, this.camVector.y, this.camVector.z);
+    // this.cam.setPosition(this.x, this.y, this.z);
+    this.cam.lookAt(this.camVector.x + this.x, this.camVector.y + this.y, this.camVector.z + this.y);
+
+    point(this.x + this.camVector.x, this.y + this.camVector.y, this.y + this.camVector.z);
+    // console.log(this.camVector.toString());
   }
   move() {
     if (keyIsDown(87)) {
-      this.heading = p5.Vector.normalize(this.camVector);
+      // this.heading = p5.Vector.normalize(this.camVector);
       // translate(0, 0, -1);
-      this.cam.move(0, 0, 1);
+      this.cam.move(0, 0, -1);
+      this.x = this.cam.eyeX;
+      this.y = this.cam.eyeY;
+      this.z = this.cam.eyeZ;
     }
   }
 }
