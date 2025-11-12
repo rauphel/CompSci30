@@ -37,7 +37,7 @@ function setup() {
   terrainHeight = generateHeight(cols, rows, seed);
 
   // creates and sets player Camera
-  playerCam = new Mover(0, 0, 0);
+  playerCam = new Mover(0, 0, 0, 0.1);
 }
 
 function draw() {
@@ -100,7 +100,7 @@ function showPlane() {
 }
 
 class Mover {
-  constructor(x, y, z) {
+  constructor(x, y, z, sense) {
     this.x = x;
     this.y = y;
     this.z = z;
@@ -111,7 +111,7 @@ class Mover {
     this.rY = 0;
     this.camVector;
 
-    this.heading;
+    this.sensitivity = sense;
   }
 
   update() {
@@ -119,14 +119,14 @@ class Mover {
     // this.cam.lookAt();
 
     this.look();
-    this.move();
     this.pointCam();
+    this.move();
 
   }
 
   look() { //change to constants
-    this.rX -= movedX * 0.1;
-    this.rY += movedY * 0.1;
+    this.rX -= movedX * this.sensitivity;
+    this.rY += movedY * this.sensitivity;
 
     this.rY = constrain(this.rY, MIN_PITCH, MAX_PITCH); // figure out
     this.rX = this.rX % 360;
@@ -135,9 +135,9 @@ class Mover {
   pointCam() {
     this.camVector = p5.Vector.fromAngles(radians(this.rY), radians(this.rX)); // figure out
     // this.cam.setPosition(this.x, this.y, this.z);
-    this.cam.lookAt(this.camVector.x + this.x, this.camVector.y + this.y, this.camVector.z + this.y);
+    this.cam.lookAt(this.camVector.x + this.cam.eyeX, this.camVector.y + this.cam.eyeY, this.camVector.z + this.cam.eyeZ);
 
-    point(this.x + this.camVector.x, this.y + this.camVector.y, this.y + this.camVector.z);
+    point(this.camVector.x + this.cam.eyeX, this.camVector.y + this.cam.eyeY, this.camVector.z + this.cam.eyeZ);
     // console.log(this.camVector.toString());
   }
   move() {
@@ -145,9 +145,12 @@ class Mover {
       // this.heading = p5.Vector.normalize(this.camVector);
       // translate(0, 0, -1);
       this.cam.move(0, 0, -1);
-      this.x = this.cam.eyeX;
-      this.y = this.cam.eyeY;
-      this.z = this.cam.eyeZ;
+      // console.log(this.cam.eyeX);
+      
+      
+      // this.x = this.cam.eyeX;
+      // this.y = this.cam.eyeY;
+      // this.z = this.cam.eyeZ;
     }
   }
 }
