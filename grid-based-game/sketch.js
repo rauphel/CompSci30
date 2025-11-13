@@ -3,7 +3,9 @@
 // Date
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// used 2d arrays in 3d space by using the 2d array to hold height values
+// explored 3d: creating generative terrain through perlin noise and 2d arrays, creating a first person camera controllable thtough 'wasd' and mouse 
+// more oop integration
 
 // initializes grid for triangles width and length and its SUBDIVISIONS
 let rows, cols;
@@ -22,6 +24,13 @@ let playerCam;
 const MAX_PITCH = 180;
 const MIN_PITCH = 0;
 
+let textAppear = true;
+
+function preload() {
+  // loads font
+  font = loadFont('Inconsolata.ttf');
+}
+
 function setup() {
   // sets up 3d renderer
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -33,7 +42,11 @@ function setup() {
   terrainHeight = generateHeight(cols, rows, seed);
 
   // creates and sets player Camera 
-  playerCam = new Mover(0, -50, 0);
+  playerCam = new Mover(0, -150, 0);
+
+  //sets up text
+  textFont(font);
+  textSize(20);
 }
 
 function draw() {
@@ -44,6 +57,20 @@ function draw() {
    
   // updates camera which holds movement and direction
   playerCam.update();
+
+  //shows text
+  showText();
+}
+
+function showText() {
+  if (textAppear) {
+    push(); // colors in and then translates and rotates text;
+    fill('black');
+    translate(50, -300, 200);
+    rotateY(PI);
+    text('Double-click: lock mouse w: forward, s: back, a: left, d: right, shift: down, space: up, r; randomize seed, c: toggle texts', 0, 0, 150, 500);
+    pop();
+  }
 }
 
 function generateHeight(cols, rows, seed) { // generates a 2d grid using perlin noise 
@@ -55,7 +82,7 @@ function generateHeight(cols, rows, seed) { // generates a 2d grid using perlin 
   for (let y = 0; y < rows; y++) {
     newGrid.push([]);
     let xOffset = 0;
-    for (let x = 0; x < cols; x++) {
+    for (let x = 0; x < cols; x++) { //pushes noise value mappes to a max of 100 and min of -100 and offset is distance between each noise valie
       newGrid[y].push(map(noise(xOffset, yOffset), 0, 1, -100, 100));
       xOffset += 0.2;
     }
@@ -66,7 +93,8 @@ function generateHeight(cols, rows, seed) { // generates a 2d grid using perlin 
 
 function showTerrain() {
   push(); // isolates translations
-  translate(-TERRAIN_X/2, 0, -TERRAIN_Y/2);
+  fill('gray');
+  translate(-TERRAIN_X/2, 0, -TERRAIN_Y/2); //transforms to be a plane on the x and z axis
   rotateX(PI/2);
 
   for (let y = 0; y < rows - 1; y++) { // generates a triangles strip to display terrain using generated heights in 2d array
@@ -84,6 +112,9 @@ function keyPressed() { // seed randomizer and gets new heights
   if (key === "r") {
     seed = random(1, 100);
     terrainHeight = generateHeight(cols, rows, seed);
+  }
+  if (key === 'c') {
+    textAppear = !textAppear;
   }
 }
 
@@ -111,56 +142,56 @@ class Mover {
   }
 
   update() {
-    // this.cam.setPosition(this.x, this.y, this.z);
-    // this.cam.lookAt();
-
+    // centralizes class' functions
     this.look();
     this.pointCam();
     this.move();
 
   }
 
-  look() { //change to constants
+  look() { 
+    // gets mouse movement on x and y axis and converts into degrees 
     this.rY -= movedX * this.sensitivity;
     this.rX += movedY * this.sensitivity;
 
-    this.rX = constrain(this.rX, MIN_PITCH, MAX_PITCH); // figure out
-    this.rY = this.rY % 360;
+    this.rX = constrain(this.rX, MIN_PITCH, MAX_PITCH); // constraints cam rotation based on x axis
+    this.rY = this.rY % 360;  // keeps cam rotation on y-axis from 1-360 degrees
   }
 
   pointCam() {
-    this.camVector = p5.Vector.fromAngles(radians(this.rX), radians(this.rY)); // figure out
-    // this.cam.setPosition(this.x, this.y, this.z);
+    // creates a vector from the origin to the angles stated the first being theta(x axis rotation) and the second being phi(y-axis rotation) and angles taken from mouse movement
+    this.camVector = p5.Vector.fromAngles(radians(this.rX), radians(this.rY)); 
+    //translates the vector to the cameras coordinates and makes the camera look at that point
     this.cam.lookAt(this.camVector.x + this.cam.eyeX, this.camVector.y + this.cam.eyeY, this.camVector.z + this.cam.eyeZ);
 
-    point(this.camVector.x + this.cam.eyeX, this.camVector.y + this.cam.eyeY, this.camVector.z + this.cam.eyeZ);
-    // console.log(this.camVector.toString());
   }
   move() {
-    if (keyIsDown(87)) { // w
+    //movement is done through the camera's local axis'
+    if (keyIsDown(87)) { // w; forward
       this.cam.move(0, 0, -1 * this.speed);
     }
-    if (keyIsDown(83)) { // s
+    if (keyIsDown(83)) { // s; back
       this.cam.move(0, 0, 1 * this.speed);
     }
-    if (keyIsDown(65)) { // a
+    if (keyIsDown(65)) { // a; left
       this.cam.move(-1 * this.speed, 0, 0);
     }
-    if (keyIsDown(68)) { // d
+    if (keyIsDown(68)) { // d; right
       this.cam.move(1 * this.speed, 0, 0);
     }
-    if (keyIsDown(16)) { // shift
+    if (keyIsDown(16)) { // shift; down
       this.cam.move(0, 1 * this.speed, 0);
     }
-    if (keyIsDown(32)) { // space
+    if (keyIsDown(32)) { // space; up
       this.cam.move(0, -1 * this.speed, 0);
     }
+    // updates object's coords with camera coords
     this.x = this.cam.eyeX;
     this.y = this.cam.eyeY;
     this.z = this.cam.eyeZ;
   }
 }
 
-function doubleClicked() {
+function doubleClicked() { // locks cursor with double click
   requestPointerLock();
 }
