@@ -13,6 +13,7 @@
 - [character in grid](character-in-grid)
 - [Basic OOP](basic-oop)
 - [Walker OOP](walker-oop)
+- [fireworks OOP](fireworks)
 
 ## Assignments
 - [interactivescene](interactivescene)
