@@ -17,6 +17,7 @@
 - [Nodes OOP](nodes)
 - [OOP Inheritance](inheritance)
 - [shape Inheritance](shape)
+- [sierpinski triangle](sierpinski)
 
 ## Assignments
 - [interactivescene](interactivescene)
